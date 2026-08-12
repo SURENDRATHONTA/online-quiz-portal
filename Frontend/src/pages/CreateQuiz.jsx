@@ -1,5 +1,6 @@
 import { useState } from "react";
 import api from "../services/api";
+import AdminNavbar from "../components/AdminNavbar";
 
 function CreateQuiz() {
     const [title, setTitle] = useState("");
@@ -77,9 +78,15 @@ function CreateQuiz() {
     };
 
     return (
-        <div className="container mt-5" style={{ maxWidth: '700px' }}>
-            <div className="card shadow p-4">
-                <h2 className="mb-4">Create Quiz & Add Questions</h2>
+        <div className="admin-create-page">
+            <AdminNavbar />
+            <main className="admin-create-container">
+                <div className="admin-create-card">
+                    <div className="admin-create-heading">
+                        <span className="eyebrow">Assessment studio</span>
+                        <h1>Create Quiz &amp; Add Questions</h1>
+                        <p>Build a clear, engaging assessment for your students.</p>
+                    </div>
 
                 <input
                     className="form-control mb-3"
@@ -103,12 +110,12 @@ function CreateQuiz() {
                     onChange={(e) => setTimeLimit(e.target.value)}
                 />
 
-                <hr className="my-4" />
-                <h4>Questions Section</h4>
-                <p className="text-muted">Set the marks for each question. The quiz total is calculated automatically.</p>
+                    <hr className="my-4" />
+                    <h2 className="admin-question-heading">Questions Section</h2>
+                    <p className="text-muted">Set the marks for each question. The quiz total is calculated automatically.</p>
 
                 {questions.map((q, qIndex) => (
-                    <div key={qIndex} className="p-3 mb-3 border rounded bg-light">
+                    <div key={qIndex} className="admin-question-card">
                         <label className="fw-bold mb-2">Question {qIndex + 1}</label>
                         <input
                             className="form-control mb-2"
@@ -148,21 +155,22 @@ function CreateQuiz() {
                     </div>
                 ))}
 
-                <button 
-                    className="btn btn-secondary mb-3" 
+                    <button
+                    className="admin-add-question-btn"
                     type="button" 
                     onClick={addQuestionField}
                 >
                     + Add Another Question
                 </button>
 
-                <button
-                    className="btn btn-success w-100 py-2"
+                    <button
+                    className="admin-publish-btn"
                     onClick={handleCreateQuiz}
                 >
                     Publish Quiz with Questions
                 </button>
-            </div>
+                </div>
+            </main>
         </div>
     );
 }

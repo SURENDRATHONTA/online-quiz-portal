@@ -3,6 +3,15 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const navigate = useNavigate();
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user')) || {};
+    } catch {
+      return {};
+    }
+  })();
+  const isAdmin = user.role === 'admin';
+  const firstName = user.name?.split(' ')[0];
 
   return (
     <div style={{ background: '#f8fafc', minHeight: '100vh', fontFamily: 'Segoe UI, sans-serif' }}>
@@ -28,15 +37,25 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <header style={{ textAlign: 'center', padding: '80px 20px', maxWidth: '800px', margin: '0 auto' }}>
+      <header className="home-hero" style={{ textAlign: 'center', padding: '80px 20px', maxWidth: '800px', margin: '0 auto' }}>
+        <div className="floating-welcome-card">
+          <span className="floating-welcome-icon">{isAdmin ? '🛠️' : '🎓'}</span>
+          <div>
+            <strong>{firstName ? `Welcome back, ${firstName}!` : 'Welcome to your learning space!'}</strong>
+            <span>{isAdmin ? 'Your command center is ready.' : 'Your next achievement starts here.'}</span>
+          </div>
+          <span className="floating-welcome-sparkle">✦</span>
+        </div>
         <span style={{ background: '#e0e7ff', color: '#1d4ed8', padding: '6px 14px', borderRadius: '20px', fontSize: '13px', fontWeight: 'bold', display: 'inline-block', marginBottom: '20px' }}>
           🚀 Next-Gen Online Quiz Assessment Platform
         </span>
         <h1 style={{ fontSize: '42px', color: '#0f172a', marginBottom: '20px', lineHeight: '1.2' }}>
-          Smart Evaluations & Real-Time Skill Testing for Modern Teams
+          {isAdmin ? 'Powerful tools to manage smarter assessments' : 'Smart learning and real-time skill testing'}
         </h1>
         <p style={{ fontSize: '18px', color: '#475569', lineHeight: '1.6', marginBottom: '35px' }}>
-          Secure, timed, and automated evaluations built for students and instructors. Create assessments, monitor live results, and track performance seamlessly.
+          {isAdmin
+            ? 'Create engaging quizzes, monitor student performance, and make data-informed decisions from one beautiful admin workspace.'
+            : 'Take secure, timed quizzes, review your results, and build confidence with a personalized student experience.'}
         </p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
           <button 
@@ -55,20 +74,23 @@ export default function Home() {
       </header>
 
       {/* Feature Highlights Grid */}
-      <section style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px 20px 80px 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px' }}>
-        <div style={{ background: '#fff', padding: '30px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <h3 style={{ color: '#1e293b', marginBottom: '10px' }}>⏱️ Timed Assessments</h3>
-          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>Dynamic timers enforce strict testing conditions with automatic submissions upon expiry.</p>
+      <section className="home-features" style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px 20px 80px 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px' }}>
+        <div className="home-feature-card" style={{ background: '#fff', padding: '30px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+          <span className="home-feature-icon">{isAdmin ? '🧩' : '⏱️'}</span>
+          <h3 style={{ color: '#1e293b', marginBottom: '10px' }}>{isAdmin ? 'Build Better Quizzes' : 'Timed Assessments'}</h3>
+          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>{isAdmin ? 'Create structured assessments with questions, options, marks, and time limits in minutes.' : 'Complete focused assessments with dynamic timers and automatic submission when time expires.'}</p>
         </div>
 
-        <div style={{ background: '#fff', padding: '30px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <h3 style={{ color: '#1e293b', marginBottom: '10px' }}>📊 Admin Analytics</h3>
-          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>Track total student participation, average scores, and individual attempt histories in real time.</p>
+        <div className="home-feature-card" style={{ background: '#fff', padding: '30px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+          <span className="home-feature-icon">{isAdmin ? '📊' : '📈'}</span>
+          <h3 style={{ color: '#1e293b', marginBottom: '10px' }}>{isAdmin ? 'Actionable Analytics' : 'Track Your Progress'}</h3>
+          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>{isAdmin ? 'Review participation, scores, attempts, and recent submissions to understand performance.' : 'See completed quizzes, accuracy, saved assessments, and detailed result history in one place.'}</p>
         </div>
 
-        <div style={{ background: '#fff', padding: '30px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
-          <h3 style={{ color: '#1e293b', marginBottom: '10px' }}>🔒 Secure & Verified</h3>
-          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>Email OTP verification guarantees authenticated student records and secure database entries.</p>
+        <div className="home-feature-card" style={{ background: '#fff', padding: '30px', borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+          <span className="home-feature-icon">{isAdmin ? '🛡️' : '🔒'}</span>
+          <h3 style={{ color: '#1e293b', marginBottom: '10px' }}>{isAdmin ? 'Confident Control' : 'Secure & Verified'}</h3>
+          <p style={{ color: '#64748b', fontSize: '14px', lineHeight: '1.5' }}>{isAdmin ? 'Manage the assessment experience from a focused workspace with clear controls and safe access.' : 'Email OTP verification and protected accounts keep your learning records safe and reliable.'}</p>
         </div>
       </section>
     </div>

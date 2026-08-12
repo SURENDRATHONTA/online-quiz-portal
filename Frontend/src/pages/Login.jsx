@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
 function Login() {
@@ -77,9 +77,13 @@ function Login() {
         </button>
       </form>
 
-      {/* Student Registration Link */}
       <div style={{ textAlign: 'center', marginTop: '20px' }}>
-        <p style={{ fontSize: '14px', color: '#64748b' }}>
+        <p style={{ fontSize: '14px', margin: '0 0 10px' }}>
+          <Link to="/forgot-password" style={{ color: '#2563eb', fontWeight: '600', textDecoration: 'none' }}>
+            Forgot password?
+          </Link>
+      </p>
+        <p style={{ fontSize: '14px', color: '#64748b', margin: 0 }}>
           Don't have an account? <span onClick={() => navigate('/register')} style={{ color: '#2563eb', cursor: 'pointer', fontWeight: '600' }}>Register as Student</span>
         </p>
       </div>
