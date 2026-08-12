@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import StudentNavbar from '../components/StudentNavbar';
 
 function Quiz() {
   const [quizzes, setQuizzes] = useState([]);
@@ -40,7 +41,9 @@ function Quiz() {
   }
 
   return (
-    <div style={{ maxWidth: '800px', margin: '40px auto', padding: '20px' }}>
+  <div className="available-quizzes-page">
+    <StudentNavbar />
+    <main style={{ maxWidth: '900px', margin: '40px auto', padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <div>
           <h2>Welcome, {user.name} 👋</h2>
@@ -112,6 +115,7 @@ function Quiz() {
           ))}
         </div>
       )}
+    </main>
     </div>
   );
 }

@@ -14,8 +14,13 @@ function StudentNavbar() {
     <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 30px', background: '#2563eb', color: '#fff', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
       <h3 style={{ margin: 0, fontSize: '18px' }}>Online Quiz Evaluation Portal — Student Portal 🎓</h3>
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+        <Link to="/student-dashboard" style={{ color: '#e0e7ff', textDecoration: 'none', fontWeight: '500' }}>Dashboard Home</Link>
         <Link to="/quiz" style={{ color: '#e0e7ff', textDecoration: 'none', fontWeight: '500' }}>Available Quizzes</Link>
         <Link to="/results" style={{ color: '#e0e7ff', textDecoration: 'none', fontWeight: '500' }}>Result History</Link>
+        <Link className="student-profile-link" to="/student-profile" title="View student profile" aria-label="View student profile">
+          <span className="student-profile-symbol">♙</span>
+          Profile
+        </Link>
         <button 
           onClick={handleLogout}
           style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '8px 14px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold' }}

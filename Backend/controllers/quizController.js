@@ -344,7 +344,7 @@ const getAllResults = async (req, res) => {
 
             try {
                 if (result.student || result.userId) {
-                    const User = require("../models/User");
+                    const User = require("../models/user");
                     studentData = await User.findById(result.student || result.userId).select("name email").lean();
                 }
             } catch (e) { /* ignore lookup errors */ }

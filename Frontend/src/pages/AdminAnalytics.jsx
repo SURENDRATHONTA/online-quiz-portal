@@ -13,10 +13,13 @@ function AdminAnalytics() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [search, setSearch] = useState('');
+  const [resultSearch, setResultSearch] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   // Fetch Analytics, Student Results, and Quizzes simultaneously
-  useEffect(() => {
-    const fetchAdminData = async () => {
+  const fetchAdminData = async (isRefresh = false) => {
+      if (isRefresh) setRefreshing(true);
       try {
         const token = localStorage.getItem('token');
         const config = {
@@ -45,9 +48,11 @@ function AdminAnalytics() {
         setMessage(err.response?.data?.message || "Failed to load dashboard data.");
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
-    };
+  };
 
+  useEffect(() => {
     fetchAdminData();
   }, []);
 
@@ -66,6 +71,36 @@ function AdminAnalytics() {
     }
   };
 
+  const filteredQuizzes = quizzes.filter((quiz) => {
+    const query = search.trim().toLowerCase();
+    return !query || quiz.title?.toLowerCase().includes(query) || quiz.description?.toLowerCase().includes(query);
+  });
+  const filteredResults = results.filter((record) => {
+    const query = resultSearch.trim().toLowerCase();
+    return !query
+      || record.student?.name?.toLowerCase().includes(query)
+      || record.quiz?.title?.toLowerCase().includes(query);
+  });
+  const recentResults = [...results]
+    .sort((a, b) => new Date(b.submittedAt || b.createdAt) - new Date(a.submittedAt || a.createdAt))
+    .slice(0, 5);
+  const performance = results.reduce((summary, record) => {
+    const percentage = Number(record.percentage)
+      || (Number(record.totalMarks) ? (Number(record.score || 0) / Number(record.totalMarks)) * 100 : 0);
+    if (percentage >= 80) summary.excellent += 1;
+    else if (percentage >= 60) summary.good += 1;
+    else if (percentage >= 40) summary.average += 1;
+    else summary.needsSupport += 1;
+    return summary;
+  }, { excellent: 0, good: 0, average: 0, needsSupport: 0 });
+  const performanceTotal = results.length || 1;
+  const averagePerformance = results.length
+    ? Math.round(results.reduce((total, record) => {
+      return total + (Number(record.percentage)
+        || (Number(record.totalMarks) ? (Number(record.score || 0) / Number(record.totalMarks)) * 100 : 0));
+    }, 0) / results.length)
+    : 0;
+
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '50px', color: '#64748b' }}>Loading analytics and management data...</div>;
   }
@@ -76,10 +111,17 @@ function AdminAnalytics() {
       <AdminNavbar />
 
       <div style={{ maxWidth: '1000px', margin: '30px auto', padding: '20px' }}>
-        <h2 style={{ marginBottom: '8px', color: '#1e293b' }}>
-          Admin Management Dashboard 📊
-        </h2>
-        <p style={{ color: '#64748b', marginBottom: '25px' }}>Monitor live assessments, evaluate student performance, and modify database quizzes.</p>
+        <section className="admin-hero-banner">
+          <div>
+            <span className="hero-kicker">✦ Control center</span>
+            <h1>Admin command center</h1>
+            <p>Monitor learners, manage assessments, and keep your quiz platform running smoothly.</p>
+          </div>
+          <div className="admin-hero-actions">
+            <button onClick={() => fetchAdminData(true)} disabled={refreshing}>{refreshing ? 'Refreshing...' : '↻ Refresh dashboard'}</button>
+            <button onClick={() => window.location.href = '/admin/create-quiz'}>＋ Create quiz</button>
+          </div>
+        </section>
 
         {message && (
           <div style={{ background: '#fee2e2', color: '#dc2626', padding: '12px', borderRadius: '6px', marginBottom: '20px', textAlign: 'center', fontWeight: '500' }}>
@@ -110,14 +152,68 @@ function AdminAnalytics() {
           </div>
         </div>
 
+        <section id="performance-analysis" className="performance-analytics-panel">
+          <div className="analytics-panel-heading">
+            <div>
+              <span className="eyebrow">Performance intelligence</span>
+              <h3>Student performance analysis</h3>
+              <p>Understand how students are performing across all submitted attempts.</p>
+            </div>
+            <div className="performance-score-ring" style={{ '--score': `${averagePerformance * 3.6}deg` }}>
+              <strong>{averagePerformance}%</strong>
+              <span>average score</span>
+            </div>
+          </div>
+          <div className="performance-analysis-grid">
+            <div className="performance-breakdown">
+              {[
+                ['Excellent', performance.excellent, '#10b981', '80–100%'],
+                ['Good', performance.good, '#06b6d4', '60–79%'],
+                ['Average', performance.average, '#f59e0b', '40–59%'],
+                ['Needs support', performance.needsSupport, '#f43f5e', 'Below 40%']
+              ].map(([label, count, color, range]) => (
+                <div className="performance-bar-row" key={label}>
+                  <div className="performance-bar-label"><span><i style={{ background: color }} />{label}</span><b>{count}</b></div>
+                  <div className="performance-bar-track"><span style={{ width: `${(count / performanceTotal) * 100}%`, background: color }} /></div>
+                  <small>{range}</small>
+                </div>
+              ))}
+            </div>
+            <div className="performance-donut-wrap">
+              <div
+                className="performance-donut"
+                style={{
+                  '--excellent': `${(performance.excellent / performanceTotal) * 100}%`,
+                  '--good': `${((performance.excellent + performance.good) / performanceTotal) * 100}%`,
+                  '--average': `${((performance.excellent + performance.good + performance.average) / performanceTotal) * 100}%`
+                }}
+              >
+                <div><strong>{results.length}</strong><span>attempts</span></div>
+              </div>
+              <div className="performance-legend">
+                <span><i className="legend-excellent" />Excellent</span>
+                <span><i className="legend-good" />Good</span>
+                <span><i className="legend-average" />Average</span>
+                <span><i className="legend-support" />Needs support</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Quiz Management Section */}
         <div style={{ marginBottom: '40px' }}>
-          <h3 style={{ marginBottom: '15px', color: '#1e293b' }}>Active Assessments Management 🛠️</h3>
-          {quizzes.length === 0 ? (
+          <div className="admin-section-heading">
+            <div>
+              <h3 style={{ marginBottom: '5px', color: '#1e293b' }}>Active Assessments Management 🛠️</h3>
+              <p className="admin-section-meta">{filteredQuizzes.length} of {quizzes.length} quizzes shown</p>
+            </div>
+            <input className="admin-search-input" placeholder="Search quizzes..." value={search} onChange={(event) => setSearch(event.target.value)} />
+          </div>
+          {filteredQuizzes.length === 0 ? (
             <p style={{ color: '#64748b', background: '#fff', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>No quizzes found. Click "Add / Insert Quiz" in the navbar to create one.</p>
           ) : (
             <div style={{ display: 'grid', gap: '15px' }}>
-              {quizzes.map((quiz) => (
+              {filteredQuizzes.map((quiz) => (
                 <div key={quiz._id} style={{ background: '#fff', padding: '20px', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <h4 style={{ margin: '0 0 5px 0', color: '#1e293b' }}>{quiz.title}</h4>
@@ -140,9 +236,15 @@ function AdminAnalytics() {
         </div>
 
         {/* Student Attempt History Table */}
-        <h3 style={{ marginBottom: '15px', color: '#1e293b' }}>Student Quiz Attempt Records 📋</h3>
+        <div className="admin-section-heading admin-results-heading">
+          <div>
+            <h3 style={{ marginBottom: '5px', color: '#1e293b' }}>Student Quiz Attempt Records 📋</h3>
+            <p className="admin-section-meta">{filteredResults.length} attempt{filteredResults.length === 1 ? '' : 's'} found</p>
+          </div>
+          <input className="admin-search-input" placeholder="Search student or quiz..." value={resultSearch} onChange={(event) => setResultSearch(event.target.value)} />
+        </div>
         
-        {results.length === 0 ? (
+        {filteredResults.length === 0 ? (
           <p style={{ color: '#64748b', background: '#fff', padding: '20px', borderRadius: '8px', textAlign: 'center' }}>No student attempts recorded yet.</p>
         ) : (
           <div style={{ background: '#fff', borderRadius: '10px', border: '1px solid #e2e8f0', overflowX: 'auto' }}>
@@ -156,7 +258,7 @@ function AdminAnalytics() {
                 </tr>
               </thead>
               <tbody>
-                {results.map((record, index) => (
+                {filteredResults.map((record, index) => (
                   <tr key={index} style={{ borderBottom: '1px solid #e2e8f0', fontSize: '14px', color: '#334155' }}>
                     <td style={{ padding: '12px 15px', fontWeight: '500' }}>{record.student?.name || 'Unknown Student'}</td>
                     <td style={{ padding: '12px 15px' }}>{record.quiz?.title || 'General Quiz'}</td>
@@ -172,6 +274,23 @@ function AdminAnalytics() {
             </table>
           </div>
         )}
+
+        <section className="admin-recent-panel">
+          <div className="admin-section-heading">
+            <div>
+              <span className="eyebrow">Live overview</span>
+              <h3>Recent submissions</h3>
+            </div>
+            <span className="admin-live-badge"><span /> Live data</span>
+          </div>
+          {recentResults.length === 0 ? <p className="admin-section-meta">Recent submissions will appear here.</p> : recentResults.map((record, index) => (
+            <div className="admin-recent-row" key={record._id || index}>
+              <span className="admin-recent-avatar">{(record.student?.name || 'S').charAt(0).toUpperCase()}</span>
+              <div><strong>{record.student?.name || 'Unknown Student'}</strong><span>{record.quiz?.title || 'General Quiz'}</span></div>
+              <b>{record.score ?? 0} / {record.totalMarks || '-'}</b>
+            </div>
+          ))}
+        </section>
       </div>
     </div>
   );
