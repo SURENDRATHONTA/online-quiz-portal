@@ -10,6 +10,21 @@ const quizSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    branch: {
+        type: String,
+        trim: true,
+        default: 'CSE'
+    },
+    academicYear: {
+        type: String,
+        trim: true,
+        default: '1st Year'
+    },
+    semester: {
+        type: String,
+        trim: true,
+        default: '1.1'
+    },
     timeLimit: {
         type: Number,
         required: true

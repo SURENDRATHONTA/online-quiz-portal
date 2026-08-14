@@ -6,6 +6,9 @@ function CreateQuiz() {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [timeLimit, setTimeLimit] = useState("");
+    const [branch, setBranch] = useState("CSE");
+    const [academicYear, setAcademicYear] = useState("1st Year");
+    const [semester, setSemester] = useState("1.1");
     
     // State for dynamic questions array
     const [questions, setQuestions] = useState([
@@ -50,6 +53,9 @@ function CreateQuiz() {
                     title,
                     description,
                     timeLimit,
+                    branch,
+                    academicYear,
+                    semester,
                     questions // Send questions to backend
                 },
                 {
@@ -68,6 +74,9 @@ function CreateQuiz() {
             setTitle("");
             setDescription("");
             setTimeLimit("");
+            setBranch("CSE");
+            setAcademicYear("1st Year");
+            setSemester("1.1");
             setQuestions([{ questionText: "", options: ["", "", "", ""], answer: "", marks: 1 }]);
 
         } catch (error) {
@@ -109,6 +118,31 @@ function CreateQuiz() {
                     value={timeLimit}
                     onChange={(e) => setTimeLimit(e.target.value)}
                 />
+                <div className="quiz-filters" style={{ marginBottom: '20px', flexWrap: 'wrap' }}>
+                    <select className="form-control" value={branch} onChange={(e) => setBranch(e.target.value)}>
+                        <option value="CSE">CSE</option>
+                        <option value="IT">IT</option>
+                        <option value="ECE">ECE</option>
+                        <option value="ME">ME</option>
+                        <option value="Civil">Civil</option>
+                    </select>
+                    <select className="form-control" value={academicYear} onChange={(e) => setAcademicYear(e.target.value)}>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                    </select>
+                    <select className="form-control" value={semester} onChange={(e) => setSemester(e.target.value)}>
+                        <option value="1.1">1.1 Sem</option>
+                        <option value="1.2">1.2 Sem</option>
+                        <option value="2.1">2.1 Sem</option>
+                        <option value="2.2">2.2 Sem</option>
+                        <option value="3.1">3.1 Sem</option>
+                        <option value="3.2">3.2 Sem</option>
+                        <option value="4.1">4.1 Sem</option>
+                        <option value="4.2">4.2 Sem</option>
+                    </select>
+                </div>
 
                     <hr className="my-4" />
                     <h2 className="admin-question-heading">Questions Section</h2>

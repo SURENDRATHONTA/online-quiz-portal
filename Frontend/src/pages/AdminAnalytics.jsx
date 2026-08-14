@@ -16,6 +16,9 @@ function AdminAnalytics() {
   const [search, setSearch] = useState('');
   const [resultSearch, setResultSearch] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [adminBranch, setAdminBranch] = useState('');
+  const [adminYear, setAdminYear] = useState('');
+  const [adminSemester, setAdminSemester] = useState('');
 
   // Fetch Analytics, Student Results, and Quizzes simultaneously
   const fetchAdminData = async (isRefresh = false) => {
@@ -73,7 +76,11 @@ function AdminAnalytics() {
 
   const filteredQuizzes = quizzes.filter((quiz) => {
     const query = search.trim().toLowerCase();
-    return !query || quiz.title?.toLowerCase().includes(query) || quiz.description?.toLowerCase().includes(query);
+    const branchMatch = adminBranch ? (quiz.branch || 'CSE') === adminBranch : true;
+    const yearMatch = adminYear ? (quiz.academicYear || '1st Year') === adminYear : true;
+    const semMatch = adminSemester ? (quiz.semester || '1.1') === adminSemester : true;
+    const textMatch = !query || quiz.title?.toLowerCase().includes(query) || quiz.description?.toLowerCase().includes(query);
+    return branchMatch && yearMatch && semMatch && textMatch;
   });
   const filteredResults = results.filter((record) => {
     const query = resultSearch.trim().toLowerCase();
@@ -202,10 +209,38 @@ function AdminAnalytics() {
 
         {/* Quiz Management Section */}
         <div style={{ marginBottom: '40px' }}>
-          <div className="admin-section-heading">
+          <div className="admin-section-heading" style={{ flexWrap: 'wrap', gap: '16px' }}>
             <div>
               <h3 style={{ marginBottom: '5px', color: '#1e293b' }}>Active Assessments Management 🛠️</h3>
               <p className="admin-section-meta">{filteredQuizzes.length} of {quizzes.length} quizzes shown</p>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', width: '100%', maxWidth: '560px' }}>
+              <select value={adminBranch} onChange={(event) => setAdminBranch(event.target.value)} style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid #d1d5db' }}>
+                <option value="">All Branches</option>
+                <option value="CSE">CSE</option>
+                <option value="IT">IT</option>
+                <option value="ECE">ECE</option>
+                <option value="ME">ME</option>
+                <option value="Civil">Civil</option>
+              </select>
+              <select value={adminYear} onChange={(event) => setAdminYear(event.target.value)} style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid #d1d5db' }}>
+                <option value="">All Years</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+              </select>
+              <select value={adminSemester} onChange={(event) => setAdminSemester(event.target.value)} style={{ padding: '10px 12px', borderRadius: '10px', border: '1px solid #d1d5db' }}>
+                <option value="">All Semesters</option>
+                <option value="1.1">1.1</option>
+                <option value="1.2">1.2</option>
+                <option value="2.1">2.1</option>
+                <option value="2.2">2.2</option>
+                <option value="3.1">3.1</option>
+                <option value="3.2">3.2</option>
+                <option value="4.1">4.1</option>
+                <option value="4.2">4.2</option>
+              </select>
             </div>
             <input className="admin-search-input" placeholder="Search quizzes..." value={search} onChange={(event) => setSearch(event.target.value)} />
           </div>
@@ -218,7 +253,12 @@ function AdminAnalytics() {
                   <div>
                     <h4 style={{ margin: '0 0 5px 0', color: '#1e293b' }}>{quiz.title}</h4>
                     <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>{quiz.description}</p>
-                    <span style={{ display: 'inline-block', marginTop: '8px', fontSize: '12px', background: '#dcfce7', color: '#16a34a', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '10px 0 0 0' }}>
+                      <span style={{ fontSize: '12px', background: '#ecfeff', color: '#0f766e', padding: '5px 9px', borderRadius: '999px' }}>{quiz.branch || 'CSE'}</span>
+                      <span style={{ fontSize: '12px', background: '#ecfeff', color: '#0f766e', padding: '5px 9px', borderRadius: '999px' }}>{quiz.academicYear || '1st Year'}</span>
+                      <span style={{ fontSize: '12px', background: '#ecfeff', color: '#0f766e', padding: '5px 9px', borderRadius: '999px' }}>Sem {quiz.semester || '1.1'}</span>
+                    </div>
+                    <span style={{ display: 'inline-block', marginTop: '10px', fontSize: '12px', background: '#dcfce7', color: '#16a34a', padding: '3px 8px', borderRadius: '4px', fontWeight: 'bold' }}>
                       {quiz.questions?.length || 0} Questions | {quiz.totalMarks || 0} Marks | {quiz.timeLimit} Mins
                     </span>
                   </div>
