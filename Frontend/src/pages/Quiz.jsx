@@ -67,7 +67,7 @@ function Quiz() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
         <div>
           <h2>Welcome, {user.name} 👋</h2>
-          <p style={{ color: '#64748b', margin: '5px 0 0 0' }}>Select a timed competitive set to start your evaluation.</p>
+          <p style={{ color: '#64748b', margin: '5px 0 0 0' }}>Pick a practice set and sharpen your skills with a relaxed, focused review.</p>
         </div>
         <button 
           onClick={handleLogout}
@@ -112,7 +112,7 @@ function Quiz() {
           </select>        </div>
       </section>
 
-      <h3 style={{ marginBottom: '20px', color: '#1e293b' }}>Available Mock Tests</h3>
+      <h3 style={{ marginBottom: '20px', color: '#1e293b' }}>Available Practice Sets</h3>
 
       {quizzes.length === 0 ? (
         <p style={{ color: '#64748b' }}>No quizzes available right now.</p>
@@ -160,7 +160,7 @@ function Quiz() {
                           whiteSpace: 'nowrap'
                         }}
                       >
-                        Start Test ➔
+                        Practice Quiz ➔
                       </button>
 
                       <button 
