@@ -12,7 +12,10 @@ const createQuiz = async (req, res) => {
             description,
             timeLimit,
             totalMarks,
-            questions
+            questions,
+            branch,
+            academicYear,
+            semester
         } = req.body;
 
         const normalizedQuestions = (questions || []).map((q) => ({
@@ -41,6 +44,9 @@ const createQuiz = async (req, res) => {
         const quiz = new Quiz({
             title,
             description,
+            branch: branch || 'CSE',
+            academicYear: academicYear || '1st Year',
+            semester: semester || '1.1',
             timeLimit,
             totalMarks: normalizedQuestions.reduce((sum, question) => sum + question.marks, 0),
             questions: normalizedQuestions.map((question) => ({

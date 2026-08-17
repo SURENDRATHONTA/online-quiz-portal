@@ -8,12 +8,10 @@ export default function TakeQuiz() {
     const [quiz, setQuiz] = useState(null);
     const [answers, setAnswers] = useState({});
     const [timeLeft, setTimeLeft] = useState(0);
-    const [warnings, setWarnings] = useState(0);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState("");
     const [loadErrorCode, setLoadErrorCode] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const maxWarnings = 2;
     const handleSubmitRef = useRef(null);
     const answersRef = useRef(answers);
 
@@ -94,55 +92,27 @@ export default function TakeQuiz() {
     }, [id]);
 
     useEffect(() => {
-        const handleVisibilityChange = () => {
-            if (!document.hidden && !isSubmitting) return;
-            if (document.hidden && !isSubmitting) {
-                setWarnings((previous) => {
-                    const next = previous + 1;
-                    if (next >= maxWarnings) {
-                        alert("Maximum security warnings exceeded. Your exam is now submitted.");
-                        handleSubmitRef.current(true);
-                    } else {
-                        alert(`Warning ${next} of ${maxWarnings}: Tab switching is prohibited!`);
-                    }
-                    return next;
-                });
-            }
-        };
-        document.addEventListener("visibilitychange", handleVisibilityChange);
-        return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
-    }, [isSubmitting]);
-
-    useEffect(() => {
         if (timeLeft <= 0 || isSubmitting) return undefined;
         const timer = setInterval(() => {
-            setTimeLeft((previous) => {
-                if (previous <= 1) {
-                    clearInterval(timer);
-                    alert("Time's up! Submitting your exam automatically.");
-                    handleSubmitRef.current(false);
-                    return 0;
-                }
-                return previous - 1;
-            });
+            setTimeLeft((previous) => (previous <= 1 ? 0 : previous - 1));
         }, 1000);
         return () => clearInterval(timer);
     }, [timeLeft, isSubmitting]);
 
-    if (loading) return <div style={{ textAlign: "center", padding: "50px" }}>Loading secure assessment...</div>;
+    if (loading) return <div style={{ textAlign: "center", padding: "50px" }}>Loading practice quiz...</div>;
 
     return (
         <div style={{ padding: "30px", maxWidth: "800px", margin: "auto", background: "#f8fafc", minHeight: "100vh" }}>
             <div style={{ display: "flex", justifyContent: "space-between", background: "#fff", padding: "15px 20px", borderRadius: "8px", border: "1px solid #e2e8f0", marginBottom: "20px" }}>
-                <h2 style={{ margin: 0, color: "#1e293b" }}>{quiz?.title || "Assessment"}</h2>
+                <h2 style={{ margin: 0, color: "#1e293b" }}>{quiz?.title || "Practice Quiz"}</h2>
                 <div style={{ textAlign: "right" }}>
-                    <span style={{ color: "#dc2626", fontWeight: "bold", display: "block" }}>Warnings: {warnings}/{maxWarnings}</span>
+                    <span style={{ color: "#16a34a", fontWeight: "bold", display: "block" }}>Practice Mode</span>
                     <span style={{ color: "#2563eb", fontWeight: "bold" }}>Time Left: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s</span>
                 </div>
             </div>
             <div style={{ background: "#fff", padding: "25px", borderRadius: "8px", border: "1px solid #e2e8f0", marginBottom: "20px" }}>
-                <p style={{ color: "#d97706", fontWeight: "bold", background: "#fef3c7", padding: "10px", borderRadius: "6px" }}>
-                    Security Mode Active: Switching tabs will record a violation and auto-submit your test.
+                <p style={{ color: "#0f766e", fontWeight: "bold", background: "#ccfbf1", padding: "10px", borderRadius: "6px" }}>
+                    Practice mode is active: review the questions, answer at your own pace, and submit when you are ready.
                 </p>
                 {loadError ? (
                     <p style={{ textAlign: "center", color: "#dc2626", padding: "20px" }}>{loadError} ({loadErrorCode})</p>
@@ -168,7 +138,7 @@ export default function TakeQuiz() {
                 )}
             </div>
             <button onClick={() => handleSubmitRef.current(false)} disabled={isSubmitting} style={{ width: "100%", padding: "14px", background: "#16a34a", color: "#fff", border: "none", borderRadius: "8px", fontSize: "16px", fontWeight: "bold" }}>
-                {isSubmitting ? "Submitting Result..." : "Submit Exam"}
+                {isSubmitting ? "Submitting Practice Result..." : "Finish Practice"}
             </button>
         </div>
     );

@@ -5,6 +5,7 @@ import api from '../services/api';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -57,15 +58,23 @@ function Login() {
           />
         </div>
 
-        <div>
+        <div style={{ position: 'relative' }}>
           <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#64748b', marginBottom: '5px' }}>Password</label>
           <input 
-            type="password" 
+            type={showPassword ? 'text' : 'password'}
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
             required
-            style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
+            style={{ width: '100%', padding: '10px 40px 10px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', boxSizing: 'border-box' }}
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(s => !s)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            style={{ position: 'absolute', right: '8px', top: '36px', border: 'none', background: 'transparent', cursor: 'pointer', fontSize: '18px', padding: '4px' }}
+          >
+            {showPassword ? '🙈' : '👁️'}
+          </button>
         </div>
 
         <button 

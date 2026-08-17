@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div style={{ background: '#f8fafc', minHeight: '100vh', fontFamily: 'Segoe UI, sans-serif' }}>
       {/* Top Navbar */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 50px', background: '#1e293b', color: '#fff', boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 50px', background: '#99b414', color: '#bbc10f', boxShadow: '0 2px 10px rgba(131, 139, 28, 0.1)' }}>
         <h2 style={{ margin: 0, fontSize: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           🎓 Online Quiz Evaluation Portal
         </h2>
@@ -41,7 +41,7 @@ export default function Home() {
         <div className="floating-welcome-card">
           <span className="floating-welcome-icon">{isAdmin ? '🛠️' : '🎓'}</span>
           <div>
-            <strong>{firstName ? `Welcome back, ${firstName}!` : 'Welcome to your learning space!'}</strong>
+            <strong>{firstName ? `Welcome back, online quiz!` : 'Welcome to your learning space!'}</strong>
             <span>{isAdmin ? 'Your command center is ready.' : 'Your next achievement starts here.'}</span>
           </div>
           <span className="floating-welcome-sparkle">✦</span>

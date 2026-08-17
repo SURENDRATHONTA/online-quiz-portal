@@ -16,6 +16,9 @@ export default function StudentDashboard() {
         }
     });
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedBranch, setSelectedBranch] = useState('');
+    const [selectedYear, setSelectedYear] = useState('');
+    const [selectedSemester, setSelectedSemester] = useState('');
     const navigate = useNavigate();
 
     const fetchStudentData = async (isRefresh = false) => {
@@ -100,6 +103,46 @@ export default function StudentDashboard() {
                         <div className="hero-actions">
                             <button onClick={() => navigate("/quiz")}>Find a quiz →</button>
                             <button className="hero-secondary-action" onClick={() => navigate("/student-profile")}>View profile</button>
+                        </div>
+                        <div className="student-quiz-selection-panel">
+                            <div>
+                                <label>Branch</label>
+                                <select value={selectedBranch} onChange={(e) => setSelectedBranch(e.target.value)}>
+                                    <option value="">All Branches</option>
+                                    <option value="CSE">CSE</option>
+                                    <option value="IT">IT</option>
+                                    <option value="ECE">ECE</option>
+                                    <option value="ME">ME</option>
+                                    <option value="Civil">Civil</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Year</label>
+                                <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                                    <option value="">All Years</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Semester</label>
+                                <select value={selectedSemester} onChange={(e) => setSelectedSemester(e.target.value)}>
+                                    <option value="">All Semesters</option>
+                                    <option value="1.1">1.1</option>
+                                    <option value="1.2">1.2</option>
+                                    <option value="2.1">2.1</option>
+                                    <option value="2.2">2.2</option>
+                                    <option value="3.1">3.1</option>
+                                    <option value="3.2">3.2</option>
+                                    <option value="4.1">4.1</option>
+                                    <option value="4.2">4.2</option>
+                                </select>
+                            </div>
+                            <button className="student-quiz-select-btn" onClick={() => navigate(`/quiz?branch=${encodeURIComponent(selectedBranch)}&year=${encodeURIComponent(selectedYear)}&sem=${encodeURIComponent(selectedSemester)}`)}>
+                                Browse {selectedBranch} {selectedYear} {selectedSemester} quizzes
+                            </button>
                         </div>
                     </div>
                     <div className="hero-orbit">
