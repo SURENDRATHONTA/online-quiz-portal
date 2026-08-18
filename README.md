@@ -186,7 +186,7 @@ PORT=5000
 | Jhansi Rani | Developer |
 | Surendra    | Developer |
 | Pallavi Siri| Developer |
-| Sanjay      | Developer |
+| Sanjay Kumar| Developer |
 | Siva Shankar| Developer |
 
 ---
