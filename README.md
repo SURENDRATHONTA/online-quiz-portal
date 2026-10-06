@@ -144,11 +144,11 @@ PORT=5000
 
 | Name | Role |
 |------|------|
+| Surendra Thonta | Developer |
+| Sanjay Kumar Vadali | Developer |
+| Shankar Palli | Developer |
+| Jhansi Kagani | Developer |
 | Pallavi Siri Gudla | Developer |
-| J.A.G.Sravani | Developer |
-| Member 3 | Developer |
-| Member 4 | Developer |
-| Member 5 | Developer |
 
 ---
 
