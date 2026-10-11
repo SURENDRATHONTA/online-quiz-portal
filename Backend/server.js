@@ -28,16 +28,25 @@ connectDB();
 const app = express();
 
 // ==========================
-// 🛡️ Fixed CORS Middleware Configuration
+// 🛡️ Dynamic CORS Middleware Configuration
 // ==========================
+const allowedOrigins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:3003",
+    "http://localhost:3004",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-    origin: [
-        "http://localhost:3000", 
-        "http://localhost:3001", 
-        "http://localhost:3002", 
-        "http://localhost:3003",
-        "http://localhost:3004"
-    ],
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
